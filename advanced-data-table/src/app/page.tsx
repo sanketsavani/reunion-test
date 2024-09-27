@@ -380,15 +380,12 @@ import {
   MRT_ColumnFiltersState,
   MRT_SortingState,
   MRT_GroupingState,
-  MRT_ColumnOrderState,
   MRT_VisibilityState,
 } from 'material-react-table';
 import {
   Box,
   Drawer,
-  MenuItem,
   FormControl,
-  Select,
   InputLabel,
   Button,
   Typography,
@@ -412,20 +409,19 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
-  const [sorting, setSorting] = useState<MRT_SortingState>([]); // Initialize sorting state
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 10, // Default page size
+    pageSize: 10,
   });
   const [grouping, setGrouping] = useState<MRT_GroupingState>([]);
-  const [columnOrder, setColumnOrder] = useState<MRT_ColumnOrderState>([]);
   const [columnVisibility, setColumnVisibility] = useState<MRT_VisibilityState>({});
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/sample-data.json'); // Fetch from the public directory
+        const response = await fetch('/sample-data.json');
         const jsonData = await response.json();
         setData(jsonData);
         setIsLoading(false);
@@ -438,13 +434,12 @@ export default function Home() {
     fetchData();
   }, []);
 
-  // Reset pagination if data is updated
   useEffect(() => {
     if (data.length > 0) {
-      setPagination({
-        ...pagination,
-        pageIndex: 0, // Reset page index when data changes
-      });
+      setPagination((prevPagination) => ({
+        ...prevPagination,
+        pageIndex: 0,
+      }));
     }
   }, [data]);
 
@@ -453,69 +448,68 @@ export default function Home() {
       accessorKey: 'name',
       header: 'Name',
       enableSorting: true,
-      enableColumnFilter: true, // Enable filtering for this column
+      enableColumnFilter: true,
     },
     {
       accessorKey: 'category',
       header: 'Category',
       enableSorting: true,
-      enableColumnFilter: true, // Enable filtering for this column
+      enableColumnFilter: true,
     },
     {
       accessorKey: 'subcategory',
       header: 'Subcategory',
       enableSorting: true,
-      enableColumnFilter: true, // Enable filtering for this column
+      enableColumnFilter: true,
     },
     {
       accessorKey: 'price',
       header: 'Price',
       Cell: ({ cell }) => `$${cell.getValue<number>().toFixed(2)}`,
       enableSorting: true,
-      enableColumnFilter: true, // Enable filtering for this column
+      enableColumnFilter: true,
     },
     {
       accessorKey: 'createdAt',
       header: 'Created At',
       Cell: ({ cell }) => format(parseISO(cell.getValue<string>()), 'dd-MMM-yyyy HH:mm'),
       enableSorting: true,
-      enableColumnFilter: true, // Enable filtering for this column
+      enableColumnFilter: true,
     },
     {
       accessorKey: 'updatedAt',
       header: 'Updated At',
       Cell: ({ cell }) => format(parseISO(cell.getValue<string>()), 'dd-MMM-yyyy HH:mm'),
       enableSorting: true,
-      enableColumnFilter: true, // Enable filtering for this column
+      enableColumnFilter: true,
     },
   ], []);
 
   const table = useMaterialReactTable({
     columns,
     data,
-    enableSorting: true, // Enable sorting
-    enableColumnFilters: true, // Enable column filtering
-    enableGlobalFilter: true, // Enable global filtering for search
+    enableSorting: true,
+    enableColumnFilters: true,
+    enableGlobalFilter: true,
     enablePagination: true,
-    enableHiding: true, // Enable hiding/showing columns
-    enableGrouping: true, // Enable grouping
-    pageCount: Math.ceil(data.length / pagination.pageSize), // Calculate total pages based on page size
+    enableHiding: true,
+    enableGrouping: true,
+    pageCount: Math.ceil(data.length / pagination.pageSize),
     state: {
       columnFilters,
       globalFilter,
       isLoading,
       pagination,
-      sorting, // Include sorting state
+      sorting,
       grouping,
-      columnOrder,
       columnVisibility,
     },
-    onColumnVisibilityChange: setColumnVisibility, // Handle column visibility changes
-    onSortingChange: setSorting, // Handle sorting changes
+    onColumnVisibilityChange: setColumnVisibility,
+    onSortingChange: setSorting,
     onPaginationChange: setPagination,
-    onColumnFiltersChange: setColumnFilters, // Handle column filter changes
-    onGlobalFilterChange: setGlobalFilter, // Handle global search changes
-    onGroupingChange: setGrouping, // Handle grouping changes
+    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
+    onGroupingChange: setGrouping,
   });
 
   const handleDrawerToggle = () => {
@@ -531,7 +525,7 @@ export default function Home() {
   return (
     <Box
       sx={{
-        backgroundColor: '#f0f0f0', // Light grey background
+        backgroundColor: '#f0f0f0',
         minHeight: '100vh',
         padding: '16px',
       }}
@@ -542,23 +536,8 @@ export default function Home() {
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <FormControl variant="outlined" size="small">
           <InputLabel id="rows-per-page-label">Rows per page</InputLabel>
-          {/* <Select
-            labelId="rows-per-page-label"
-            value={pagination.pageSize}
-            onChange={(e) =>
-              setPagination({
-                ...pagination,
-                pageSize: Number(e.target.value),
-              })
-            }
-            label="Rows per page"
-          >
-            <MenuItem value={5}>5</MenuItem>
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={20}>20</MenuItem>
-          </Select> */}
         </FormControl>
-        <Button onClick={handleDrawerToggle} style={{ color:'red', marginLeft: '20px' }}>
+        <Button onClick={handleDrawerToggle} style={{ color: 'red', marginLeft: '20px' }}>
           Toggle Grouping Panel
         </Button>
       </Box>
@@ -567,9 +546,9 @@ export default function Home() {
         table={table}
         muiTableContainerProps={{
           sx: {
-            backgroundColor: '#ffffff', // White background for table
+            backgroundColor: '#ffffff',
             borderRadius: '8px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Slight shadow to lift the table
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
           },
         }}
         muiTableBodyCellProps={{
@@ -579,13 +558,12 @@ export default function Home() {
         }}
         muiTableHeadCellProps={{
           sx: {
-            backgroundColor: '#e0e0e0', // Slightly darker grey for header cells
+            backgroundColor: '#e0e0e0',
             fontWeight: 'bold',
           },
         }}
       />
 
-      {/* Drawer for Grouping Options */}
       <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerToggle}>
         <Box sx={{ width: 250, padding: '16px' }}>
           <Typography variant="h6">Group By</Typography>
