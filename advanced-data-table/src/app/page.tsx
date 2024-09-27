@@ -369,7 +369,6 @@
 
 
 
-
 'use client';
 
 import React, { useMemo, useState, useEffect } from 'react';
@@ -385,8 +384,6 @@ import {
 import {
   Box,
   Drawer,
-  FormControl,
-  InputLabel,
   Button,
   Typography,
   List,
@@ -421,7 +418,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/sample-data.json');
+        const response = await fetch('/sample-data.json'); 
         const jsonData = await response.json();
         setData(jsonData);
         setIsLoading(false);
@@ -433,15 +430,6 @@ export default function Home() {
 
     fetchData();
   }, []);
-
-  useEffect(() => {
-    if (data.length > 0) {
-      setPagination((prevPagination) => ({
-        ...prevPagination,
-        pageIndex: 0,
-      }));
-    }
-  }, [data]);
 
   const columns = useMemo<MRT_ColumnDef<DataItem>[]>(() => [
     {
@@ -534,35 +522,23 @@ export default function Home() {
       <h2>By Sanket Nainesh Savani</h2>
 
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <FormControl variant="outlined" size="small">
-          <InputLabel id="rows-per-page-label">Rows per page</InputLabel>
-        </FormControl>
         <Button onClick={handleDrawerToggle} style={{ color: 'red', marginLeft: '20px' }}>
           Toggle Grouping Panel
         </Button>
       </Box>
 
-      <MaterialReactTable
-        table={table}
-        muiTableContainerProps={{
-          sx: {
-            backgroundColor: '#ffffff',
-            borderRadius: '8px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-          },
+      <Box
+        sx={{
+          backgroundColor: '#ffffff',
+          borderRadius: '8px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         }}
-        muiTableBodyCellProps={{
-          sx: {
-            padding: '8px',
-          },
-        }}
-        muiTableHeadCellProps={{
-          sx: {
-            backgroundColor: '#e0e0e0',
-            fontWeight: 'bold',
-          },
-        }}
-      />
+      >
+        <MaterialReactTable
+          table={table}
+          // Removed muiTableBodyCellProps and muiTableHeadCellProps
+        />
+      </Box>
 
       <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerToggle}>
         <Box sx={{ width: 250, padding: '16px' }}>
